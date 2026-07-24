@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring & Kontrol Penyiraman Cabai</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>🌱 Monitoring Bibit Cabai</h1>
+    
+    <div id="mqtt-status" class="status-badge disconnected">Broker MQTT: Terputus</div>
+
+    <div class="sensor-card">
+        <div>
+            <div class="sensor-title">Kelembapan Tanah</div>
+            <div id="humi1-val" class="sensor-value">0%</div>
+        </div>
+        <div class="sensor-icon">🪴</div>
+    </div>
+
+    <div id="pump-status" class="pump-indicator">Status Pompa: OFF</div>
+
+    <div class="control-section">
+        <div class="control-title">Kontrol Pompa</div>
+        <div class="btn-group">
+            <button class="btn-on" onclick="sendControl('ON')">HIDUPKAN</button>
+            <button class="btn-off" onclick="sendControl('OFF')">MATIKAN</button>
+            <button class="btn-auto" onclick="sendControl('AUTO')">OTOMATIS</button>
+        </div>
+
+        <div class="control-title">Setel Timer Maksimal (Menit)</div>
+        <div class="timer-group">
+            <input type="number" id="timer-input" value="1" min="1" max="60">
+            <button class="btn-save" onclick="sendTimer()">SIMPAN TIMER</button>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

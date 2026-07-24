@@ -1,0 +1,156 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f0f4f8;
+    color: #333;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 450px;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+h1 {
+    font-size: 1.4rem;
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.status-badge {
+    display: block;
+    text-align: center;
+    padding: 8px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+.connected { 
+    background-color: #e8f5e9; 
+    color: #2e7d32; 
+}
+
+.disconnected { 
+    background-color: #ffebee; 
+    color: #c62828; 
+}
+
+.sensor-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    border-left: 6px solid #3498db;
+}
+
+.sensor-title { 
+    font-size: 1rem; 
+    color: #64748b; 
+}
+
+.sensor-value { 
+    font-size: 2rem; 
+    font-weight: bold; 
+    color: #1e293b; 
+}
+
+.sensor-icon {
+    font-size: 2.5rem;
+}
+
+.control-section {
+    margin-top: 20px;
+    background: #f8fafc;
+    padding: 16px;
+    border-radius: 12px;
+}
+
+.control-title {
+    font-size: 0.95rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #334155;
+}
+
+.btn-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-on { 
+    background-color: #22c55e; 
+    color: white; 
+}
+
+.btn-off { 
+    background-color: #ef4444; 
+    color: white; 
+}
+
+.btn-auto { 
+    background-color: #3b82f6; 
+    color: white; 
+}
+
+.btn-save {
+    background-color: #64748b;
+    color: white;
+}
+
+button:active { 
+    transform: scale(0.98); 
+    opacity: 0.9; 
+}
+
+.timer-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+input[type="number"] {
+    width: 80px;
+    padding: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.pump-indicator {
+    text-align: center;
+    padding: 14px;
+    border-radius: 8px;
+    font-weight: bold;
+    margin-top: 15px;
+    background: #e2e8f0;
+    color: #475569;
+}

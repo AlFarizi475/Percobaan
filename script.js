@@ -40,7 +40,7 @@ function connectMQTT() {
 function onConnect() {
     const badge = document.getElementById("mqtt-status");
     badge.className = "status-badge connected";
-    badge.innerText = "Broker MQTT: Terhubung";
+    badge.innerText = "Status Penyandingan: Terhubung";
 
     // Subscribe topik sensor & status dari ESP32
     client.subscribe(topics.sensor_humi1);

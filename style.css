@@ -106,12 +106,12 @@ button {
 }
 
 .btn-on { 
-    background-color: #22c55e; 
+    background-color: #008000; 
     color: white; 
 }
 
 .btn-off { 
-    background-color: #ef4444; 
+    background-color: #8b0000; 
     color: white; 
 }
 

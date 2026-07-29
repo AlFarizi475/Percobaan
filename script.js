@@ -12,12 +12,13 @@ const topics = {
     control: mqtt_config.base_topic + 'kontrol',
     timer: mqtt_config.base_topic + 'timer',
     sensor_humi1: mqtt_config.base_topic + 'sensor/kelembaban1',
+    sensor_temp: mqtt_config.base_topic + 'sensor/suhu',
+    sensor_air_humi: mqtt_config.base_topic + 'sensor/kelembaban_udara',
     pump_status: mqtt_config.base_topic + 'status/pompa'
 };
 
 let client;
 
-// --- FUNGSI KONEKSI KE BROKER MQTT ---
 function connectMQTT() {
     const clientId = "WebClient_" + Math.random().toString(16).substr(2, 8);
     client = new Paho.MQTT.Client(mqtt_config.broker, mqtt_config.port, clientId);
@@ -36,59 +37,78 @@ function connectMQTT() {
     client.connect(options);
 }
 
-// Terhubung Sukses
 function onConnect() {
     const badge = document.getElementById("mqtt-status");
+    const statusText = document.getElementById("mqtt-status-text");
     badge.className = "status-badge connected";
-    badge.innerText = "Status Penyandingan: Terhubung";
+    statusText.innerText = "Status: Terhubung";
 
-    // Subscribe topik sensor & status dari ESP32
     client.subscribe(topics.sensor_humi1);
+    client.subscribe(topics.sensor_temp);
+    client.subscribe(topics.sensor_air_humi);
     client.subscribe(topics.pump_status);
 }
 
-// Gagal Terhubung
 function onFailure(responseObject) {
     const badge = document.getElementById("mqtt-status");
+    const statusText = document.getElementById("mqtt-status-text");
     badge.className = "status-badge disconnected";
-    badge.innerText = "Gagal Terhubung: " + responseObject.errorMessage;
+    statusText.innerText = "Gagal: " + responseObject.errorMessage;
     setTimeout(connectMQTT, 5000);
 }
 
-// Koneksi Terputus
 function onConnectionLost(responseObject) {
     if (responseObject.errorCode !== 0) {
         const badge = document.getElementById("mqtt-status");
+        const statusText = document.getElementById("mqtt-status-text");
         badge.className = "status-badge disconnected";
-        badge.innerText = "Koneksi Terputus. Menghubungkan ulang...";
+        statusText.innerText = "Terputus. Menghubungkan ulang...";
         setTimeout(connectMQTT, 5000);
     }
 }
 
-// --- MENERIMA DATA REAL-TIME DARI ESP32 ---
 function onMessageArrived(message) {
+    const payload = message.payloadString;
+
+    // 1. Kelembapan Tanah
     if (message.destinationName === topics.sensor_humi1) {
-        document.getElementById("humi1-val").innerText = message.payloadString + "%";
+        const val = parseFloat(payload) || 0;
+        document.getElementById("humi1-val").innerHTML = `${val}<small>%</small>`;
+        document.getElementById("soil-progress").style.width = Math.min(val, 100) + "%";
     } 
+    // 2. Suhu Udara (DHT11)
+    else if (message.destinationName === topics.sensor_temp) {
+        const val = parseFloat(payload) || 0;
+        document.getElementById("temp-val").innerHTML = `${val}<small>°C</small>`;
+        const percentage = Math.min((val / 50) * 100, 100);
+        document.getElementById("temp-progress").style.width = percentage + "%";
+    } 
+    // 3. Kelembapan Udara (DHT11)
+    else if (message.destinationName === topics.sensor_air_humi) {
+        const val = parseFloat(payload) || 0;
+        document.getElementById("air-humi-val").innerHTML = `${val}<small>%</small>`;
+        document.getElementById("air-humi-progress").style.width = Math.min(val, 100) + "%";
+    }
+    // 4. Status Pompa
     else if (message.destinationName === topics.pump_status) {
         const statusBox = document.getElementById("pump-status");
-        if (message.payloadString === "ON") {
-            statusBox.innerText = "Status Pompa: HIDUP (MANUAL)";
-            statusBox.style.background = "#dcfce7";
-            statusBox.style.color = "#15803d";
-        } else if (message.payloadString === "OFF") {
-            statusBox.innerText = "Status Pompa: MATI";
-            statusBox.style.background = "#fee2e2";
-            statusBox.style.color = "#b91c1c";
-        } else if (message.payloadString === "AUTO") {
-            statusBox.innerText = "Status Pompa: MODE OTOMATIS";
-            statusBox.style.background = "#dbeafe";
-            statusBox.style.color = "#1d4ed8";
+        const statusText = document.getElementById("pump-status-text");
+
+        statusBox.className = "pump-indicator";
+
+        if (payload === "ON") {
+            statusText.innerText = "Status Pompa: HIDUP (MANUAL)";
+            statusBox.classList.add("on");
+        } else if (payload === "OFF") {
+            statusText.innerText = "Status Pompa: MATI";
+            statusBox.classList.add("off");
+        } else if (payload === "AUTO") {
+            statusText.innerText = "Status Pompa: MODE OTOMATIS";
+            statusBox.classList.add("auto");
         }
     }
 }
 
-// --- MENGIRIM PERINAH KONTROL KE ESP32 ---
 function sendControl(command) {
     if (client && client.isConnected()) {
         const message = new Paho.MQTT.Message(command);
@@ -111,5 +131,4 @@ function sendTimer() {
     }
 }
 
-// Otomatis jalankan fungsi koneksi saat halaman dibuka
 window.onload = connectMQTT;
